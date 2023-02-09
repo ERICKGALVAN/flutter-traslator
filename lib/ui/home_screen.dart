@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -48,18 +50,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onSpeechResult(SpeechRecognitionResult result) async {
     _audioRecorded = (result.recognizedWords);
     setState(() {});
-    _traslate();
-  }
-
-  void _traslate() async {
     await Future.delayed(const Duration(seconds: 1));
-    _traslator
-        .translate(_audioRecorded,
-            to: _toLanguage == null ? 'en' : _toLanguage!.split('_')[0])
-        .then((value) {
-      _translatedText = value.text;
-      setState(() {});
-    });
+    if (_speechToText.isNotListening) {
+      _traslator
+          .translate(_audioRecorded,
+              to: _toLanguage == null ? 'en' : _toLanguage!.split('_')[0])
+          .then((value) {
+        _translatedText = value.text;
+        setState(() {});
+      });
+    }
   }
 
   final SpeechToText _speechToText = SpeechToText();
